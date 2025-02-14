@@ -26,16 +26,20 @@ def clean_text(text):
     return " ".join(words)
 
 def preprocess_reddit_data(input_file="data/reddit_data.csv", output_file="data/reddit_cleaned.csv"):
-    """Read, clean, and save preprocessed Reddit text data."""
+    """Read, clean, and save preprocessed Reddit text data while retaining upvotes, comments, and timestamps."""
     df = pd.read_csv(input_file)
     
-    if "title" not in df.columns:
-        print("⚠️ No 'title' column found in CSV. Check the dataset.")
+    # Check if required columns exist
+    required_columns = {"title", "upvotes", "comments", "timestamp"}
+    if not required_columns.issubset(df.columns):
+        print(f"⚠️ Required columns {required_columns} not found in CSV. Check the dataset.")
         return
 
+    # Clean the text in the 'title' column
     df["cleaned_text"] = df["title"].astype(str).apply(clean_text)
     
-    df[["cleaned_text"]].to_csv(output_file, index=False)
+    # Save cleaned text along with upvotes, comments, and timestamp
+    df[["cleaned_text", "upvotes", "comments", "timestamp"]].to_csv(output_file, index=False)
     print(f"✅ Cleaned data saved to {output_file}")
 
 # Run preprocessing
