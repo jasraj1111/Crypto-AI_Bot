@@ -1,15 +1,31 @@
 from flask import Flask, jsonify
 import pandas as pd
 from flask_cors import CORS
+import math
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for frontend requests
+
+# Function to replace NaN with null
+def replace_nan_with_null(obj):
+    """
+    Recursively replace NaN values with null in a dictionary or list.
+    """
+    if isinstance(obj, float) and math.isnan(obj):
+        return None
+    elif isinstance(obj, dict):
+        return {key: replace_nan_with_null(value) for key, value in obj.items()}
+    elif isinstance(obj, list):
+        return [replace_nan_with_null(item) for item in obj]
+    return obj
 
 # Load trading signals
 def load_signals():
     try:
         df = pd.read_csv("scripts/data/trading_signals.csv")
-        return df.to_dict(orient="records")
+        # Replace NaN values with null
+        sanitized_data = replace_nan_with_null(df.to_dict(orient="records"))
+        return sanitized_data
     except Exception as e:
         return {"error": str(e)}
 
@@ -24,7 +40,9 @@ def get_backtest_results():
     """API to fetch latest backtesting results."""
     try:
         df = pd.read_csv("scripts/data/backtest_results.csv")
-        return jsonify(df.to_dict(orient="records"))
+        # Replace NaN values with null
+        sanitized_data = replace_nan_with_null(df.to_dict(orient="records"))
+        return jsonify(sanitized_data)
     except Exception as e:
         return jsonify({"error": str(e)})
 

@@ -1,5 +1,13 @@
-action,timestamp,price
-BUY,2025-02-10 05:33:15,97015.26
-SELL,2025-02-10 21:52:22,97375.81
-BUY,2025-02-10 22:04:21,97390.26
-SELL,2025-02-12 22:11:13,97806.57
+metric_name,timestamp,value,details,action,price,profit_loss,running_balance
+Backtest Summary,2025-02-15 10:43:03.384755,,Performance Metrics,,,,
+Initial Balance,2025-02-10 05:33:15.000000,$1000.00,Starting capital,,,,
+Final Balance,2025-02-12 22:11:13.000000,$1008.01,Ending capital,,,,
+Total Return,2025-02-12 22:11:13.000000,0.80%,Return on Investment,,,,
+Win Rate,2025-02-12 22:11:13.000000,100.00%,Percentage of profitable trades,,,,
+Max Drawdown,2025-02-12 22:11:13.000000,0.00%,Maximum peak to trough decline,,,,
+Profit Factor,2025-02-12 22:11:13.000000,776.86,Ratio of gross profit to gross loss,,,,
+Total Trades,2025-02-12 22:11:13.000000,4,Number of trades executed,,,,
+Trade,2025-02-10 05:33:15.000000,97015.26,Trade execution,BUY,97015.26,0.0,1000.0
+Trade,2025-02-10 21:52:22.000000,97375.81,Trade execution,SELL,97375.81,360.5500000000029,1360.550000000003
+Trade,2025-02-10 22:04:21.000000,97390.26,Trade execution,BUY,97390.26,0.0,1360.550000000003
+Trade,2025-02-12 22:11:13.000000,97806.57,Trade execution,SELL,97806.57,416.3100000000122,1776.8600000000151

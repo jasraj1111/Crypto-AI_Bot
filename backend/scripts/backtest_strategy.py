@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 from typing import Tuple, List
+from datetime import datetime
 
 def backtest_trading_strategy(
     sentiment_file: str = "data/trading_signals.csv",
@@ -116,15 +117,80 @@ def backtest_trading_strategy(
     # Calculate performance metrics
     profit = ((balance - initial_balance) / initial_balance) * 100
     win_rate = calculate_win_rate(trades)
-    
-    # Calculate additional metrics
     max_drawdown = calculate_max_drawdown(trades, initial_balance)
     profit_factor = calculate_profit_factor(trades)
     
-    # Save detailed results
+    # Create DataFrame with trades
     results_df = pd.DataFrame(trades, columns=["action", "timestamp", "price"])
-    results_df.to_csv(output_file, index=False)
     
+    # Calculate trade-specific metrics
+    results_df["profit_loss"] = 0.0
+    for i in range(1, len(results_df)):
+        if results_df.iloc[i]["action"] in ["SELL", "TAKE_PROFIT", "STOP_LOSS"]:
+            results_df.iloc[i, results_df.columns.get_loc("profit_loss")] = \
+                results_df.iloc[i]["price"] - results_df.iloc[i-1]["price"]
+    
+    # Calculate cumulative metrics
+    results_df["cumulative_profit_loss"] = results_df["profit_loss"].cumsum()
+    results_df["running_balance"] = initial_balance + results_df["cumulative_profit_loss"]
+    
+    # Add summary metrics to a separate DataFrame
+    summary_metrics = pd.DataFrame([{
+        "metric_name": "Backtest Summary",
+        "timestamp": datetime.now(),
+        "value": "",
+        "details": "Performance Metrics"
+    }, {
+        "metric_name": "Initial Balance",
+        "timestamp": results_df.iloc[0]["timestamp"] if not results_df.empty else None,
+        "value": f"${initial_balance:.2f}",
+        "details": "Starting capital"
+    }, {
+        "metric_name": "Final Balance",
+        "timestamp": results_df.iloc[-1]["timestamp"] if not results_df.empty else None,
+        "value": f"${balance:.2f}",
+        "details": "Ending capital"
+    }, {
+        "metric_name": "Total Return",
+        "timestamp": results_df.iloc[-1]["timestamp"] if not results_df.empty else None,
+        "value": f"{profit:.2f}%",
+        "details": "Return on Investment"
+    }, {
+        "metric_name": "Win Rate",
+        "timestamp": results_df.iloc[-1]["timestamp"] if not results_df.empty else None,
+        "value": f"{win_rate:.2%}",
+        "details": "Percentage of profitable trades"
+    }, {
+        "metric_name": "Max Drawdown",
+        "timestamp": results_df.iloc[-1]["timestamp"] if not results_df.empty else None,
+        "value": f"{max_drawdown:.2%}",
+        "details": "Maximum peak to trough decline"
+    }, {
+        "metric_name": "Profit Factor",
+        "timestamp": results_df.iloc[-1]["timestamp"] if not results_df.empty else None,
+        "value": f"{profit_factor:.2f}",
+        "details": "Ratio of gross profit to gross loss"
+    }, {
+        "metric_name": "Total Trades",
+        "timestamp": results_df.iloc[-1]["timestamp"] if not results_df.empty else None,
+        "value": str(len(trades)),
+        "details": "Number of trades executed"
+    }])
+    
+    # Combine trades and summary metrics
+    final_results = pd.concat([
+        summary_metrics,
+        results_df.assign(
+            metric_name="Trade",
+            value=lambda x: x["price"].astype(str),
+            details=lambda x: "Trade execution"
+        )[["metric_name", "timestamp", "value", "details", "action", "price", "profit_loss", "running_balance"]]
+    ]).reset_index(drop=True)
+    
+    # Save to CSV
+    final_results.to_csv(output_file, index=False)
+    
+    # Print summary
     print(f"✅ Backtesting complete! Final Balance: ${balance:.2f} ({profit:.2f}% ROI)")
     print(f"✅ Win Rate: {win_rate:.2%}")
     print(f"📊 Max Drawdown: {max_drawdown:.2%}")
