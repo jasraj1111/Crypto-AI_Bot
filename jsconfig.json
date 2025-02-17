@@ -1,0 +1,8 @@
+{
+    "compilerOptions": {
+      "baseUrl": ".",
+      "paths": {
+        "@uniswap/v3-periphery/*": ["./node_modules/@uniswap/v3-periphery/*"]
+      }
+    }
+  }

@@ -1,5 +1,5 @@
 metric_name,timestamp,value,details,action,price,profit_loss,running_balance
-Backtest Summary,2025-02-15 10:43:03.384755,,Performance Metrics,,,,
+Backtest Summary,2025-02-16 21:31:28.226656,,Performance Metrics,,,,
 Initial Balance,2025-02-10 05:33:15.000000,$1000.00,Starting capital,,,,
 Final Balance,2025-02-12 22:11:13.000000,$1008.01,Ending capital,,,,
 Total Return,2025-02-12 22:11:13.000000,0.80%,Return on Investment,,,,

@@ -1,0 +1,6 @@
+decimals,id,name,symbol
+18,0x0000000000085d4780b73119b644ae5ecd22b376,TrueUSD,TUSD
+18,0x00ad8ebf64f141f1c81e9f8f792d3d1631c6c684,Aave variable debt bearing CRV,variableDebtCRV
+18,0x01c0eb1f8c6f1c1bf74ae028697ce7aa2a8b0e92,Aave variable debt bearing TUSD,variableDebtTUSD
+18,0x028171bca77440897b824ca71d1c56cac55b68a3,Aave interest bearing DAI,aDAI
+18,0x030ba81f1c18d280636f32af80b9aad02cf0854e,Aave interest bearing WETH,aWETH
